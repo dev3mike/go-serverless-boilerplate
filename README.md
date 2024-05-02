@@ -1,13 +1,13 @@
-# Welcome to your CDK Go project!
+# AWS Serverless Boilerplate in Go 🚀
 
-This is a blank project for CDK development with Go.
+Welcome to our high-energy, low-overhead serverless boilerplate! Currently under intense development (mostly during coffee breaks).
 
-The `cdk.json` file tells the CDK toolkit how to execute your app.
+## What's This?
 
-## Useful commands
+This is your starting point for building serverless applications with AWS using Go. Think of it as a pre-baked cake mix; just add your specific ingredients, and voila, you have an app!
 
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
- * `go test`         run unit tests
-# go-serverless-boilerplate
+## Project Status
+
+- 🚀 **Launch Status**: On the runway.
+- 🛠 **Building**: In progress with Go power!
+- 🐛 **Bugs**: Feature sidekicks!
