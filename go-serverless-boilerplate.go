@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
-	// "github.com/aws/aws-cdk-go/awscdk/v2/awssqs"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 )
@@ -18,12 +20,28 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 	}
 	stack := awscdk.NewStack(scope, &id, &sprops)
 
-	// The code that defines your stack goes here
+	usersTable := awsdynamodb.NewTable(
+		stack, 
+		jsii.String("UsersTable"), 
+		&awsdynamodb.TableProps{
+		PartitionKey: &awsdynamodb.Attribute{
+				Name: jsii.String("email"),
+				Type: awsdynamodb.AttributeType_STRING,
+			},
+			TableName: jsii.String("userTable"),
+	})
 
-	// example resource
-	// queue := awssqs.NewQueue(stack, jsii.String("GoServerlessBoilerplateQueue"), &awssqs.QueueProps{
-	// 	VisibilityTimeout: awscdk.Duration_Seconds(jsii.Number(300)),
-	// })
+	userRegistrationHandlerFunction := awslambda.NewFunction(
+		stack, 
+		jsii.String("userRegistrationHandlerFunction"), 
+		&awslambda.FunctionProps{
+			FunctionName: jsii.String("ChaptersLambdaFunction"),
+			Runtime:      awslambda.Runtime_GO_1_X(),
+			Code:         awslambda.AssetCode_FromAsset(jsii.String("src/."), nil),
+			Handler:      jsii.String("main"),
+		})
+
+	usersTable.GrantReadWriteData(userRegistrationHandlerFunction)
 
 	return stack
 }
