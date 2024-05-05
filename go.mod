@@ -11,6 +11,7 @@ require (
 require (
 	github.com/aws/aws-lambda-go v1.47.0 // indirect
 	github.com/aws/constructs-go/constructs/v3 v3.4.232 // indirect
+	golang.org/x/crypto v0.22.0 // indirect
 )
 
 require (

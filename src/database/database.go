@@ -56,7 +56,7 @@ func(db DynamoDbClient) DoesUserExist(email string) (bool, error){
 	return false, nil;
 }
 
-func(db DynamoDbClient) CreateUser(userDto *types.UserDto) error {
+func(db DynamoDbClient) CreateUser(userDto *types.UserEntity) error {
 	item := &dynamodb.PutItemInput{
 		TableName: aws.String(TABLE_NAME),
 		Item: map[string]*dynamodb.AttributeValue{

@@ -16,7 +16,7 @@ func NewUserService(dbClient database.DataStore) UserService{
 	}
 }
 
-func(u UserService) CreateUser(user *types.UserDto) error{
+func(u UserService) CreateUser(user *types.UserEntity) error{
 	userExists, err := u.dbClient.DoesUserExist(user.Email);
 
 	if err != nil{

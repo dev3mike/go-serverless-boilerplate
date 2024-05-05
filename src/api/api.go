@@ -16,20 +16,26 @@ func NewApiHandler(userService services.UserService) ApiHandler {
 	}
 }
 
-func(api ApiHandler) CreateUser(event types.UserDto) error {
+func(api ApiHandler) CreateUser(userDto types.UserDto) error {
 
 	inputErr := helpers.ValidateInput(
-		helpers.Input{Name: "email", Value: event.Email},
-		helpers.Input{Name: "firstName", Value: event.FirstName},
-		helpers.Input{Name: "lastName", Value: event.LastName},
-		helpers.Input{Name: "password", Value: event.Password},
+		helpers.Input{Name: "email", Value: userDto.Email},
+		helpers.Input{Name: "firstName", Value: userDto.FirstName},
+		helpers.Input{Name: "lastName", Value: userDto.LastName},
+		helpers.Input{Name: "password", Value: userDto.Password},
 	)
 
 	if inputErr != nil {
 		return inputErr
 	}
 
-	err := api.userService.CreateUser(&event);
+	userEntity, err := userDto.GetEntity();
+	
+	if err != nil{
+		return err
+	}
+
+	err = api.userService.CreateUser(&userEntity);
 
 	if err != nil{
 		return err
