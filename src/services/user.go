@@ -7,10 +7,10 @@ import (
 )
 
 type UserService struct {
-	dbClient database.DynamoDbClient
+	dbClient database.DataStore
 }
 
-func NewUserService(dbClient database.DynamoDbClient) UserService{
+func NewUserService(dbClient database.DataStore) UserService{
 	return UserService{
 		dbClient: dbClient,
 	}

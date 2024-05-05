@@ -8,7 +8,10 @@ require (
 	github.com/aws/jsii-runtime-go v1.97.0
 )
 
-require github.com/aws/constructs-go/constructs/v3 v3.4.232 // indirect
+require (
+	github.com/aws/aws-lambda-go v1.47.0 // indirect
+	github.com/aws/constructs-go/constructs/v3 v3.4.232 // indirect
+)
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect

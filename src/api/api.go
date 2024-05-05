@@ -34,4 +34,6 @@ func(api ApiHandler) CreateUser(event types.UserDto) error {
 	if err != nil{
 		return err
 	}
+
+	return nil
 }

@@ -1,0 +1,13 @@
+{
+  "name": "go-serverless-boilerplate",
+  "version": "1.0.0",
+  "description": "Welcome to our high-energy, low-overhead serverless boilerplate! Currently under intense development (mostly during coffee breaks).",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd src && make build",
+    "deploy": "cdk deploy",
+    "buildAndDeploy": "npm run build && npm run deploy"
+  },
+  "author": "",
+  "license": "ISC"
+}

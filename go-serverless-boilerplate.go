@@ -22,21 +22,21 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 
 	usersTable := awsdynamodb.NewTable(
 		stack, 
-		jsii.String("UsersTable"), 
+		jsii.String("usersTable"), 
 		&awsdynamodb.TableProps{
 		PartitionKey: &awsdynamodb.Attribute{
 				Name: jsii.String("email"),
 				Type: awsdynamodb.AttributeType_STRING,
 			},
-			TableName: jsii.String("userTable"),
+			TableName: jsii.String("usersTable"),
 	})
 
 	userRegistrationHandlerFunction := awslambda.NewFunction(
 		stack, 
 		jsii.String("userRegistrationHandlerFunction"), 
 		&awslambda.FunctionProps{
-			FunctionName: jsii.String("ChaptersLambdaFunction"),
-			Runtime:      awslambda.Runtime_GO_1_X(),
+			FunctionName: jsii.String("userRegistrationHandlerFunction"),
+			Runtime:      awslambda.Runtime_PROVIDED_AL2023(),
 			Code:         awslambda.AssetCode_FromAsset(jsii.String("src/."), nil),
 			Handler:      jsii.String("main"),
 		})

@@ -1,7 +1,11 @@
 package main
 
-import "github.com/dev3mike/go-serverless-boilerplate/src/app"
+import (
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/dev3mike/go-serverless-boilerplate/src/app"
+)
 
 func main(){
-	_ = app.NewApp()
+	application := app.NewApp()
+	lambda.Start(application.ApiHandler.CreateUser)
 } 

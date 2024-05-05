@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	TABLE_NAME = "users"
+	TABLE_NAME = "usersTable"
 )
 
 type DynamoDbClient struct {
@@ -50,10 +50,10 @@ func(db DynamoDbClient) DoesUserExist(email string) (bool, error){
 	}
 
 	if result.Item != nil {
-		return false, nil
+		return true, nil
 	}
 
-	return true, nil;
+	return false, nil;
 }
 
 func(db DynamoDbClient) CreateUser(userDto *types.UserDto) error {
