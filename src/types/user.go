@@ -1,6 +1,8 @@
 package types
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"github.com/dev3mike/go-serverless-boilerplate/src/helpers"
+)
 
 type UserDto struct {
 	FirstName string `json:"firstName"`
@@ -17,7 +19,7 @@ type UserEntity struct {
 }
 
 func(dto UserDto) GetEntity() (UserEntity, error){
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(dto.Password), 10)
+	hashedPassword, err := helpers.HashPassoword(dto.Password)
 
 	if err != nil {
 		return UserEntity{}, err
@@ -27,6 +29,6 @@ func(dto UserDto) GetEntity() (UserEntity, error){
 		FirstName: dto.FirstName,
 		LastName: dto.LastName,
 		Email: dto.Email,
-		Password: string(hashedPassword),
+		Password: hashedPassword,
 	}, nil
 }
