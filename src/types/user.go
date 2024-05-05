@@ -18,14 +18,14 @@ type UserEntity struct {
 	Password string `json:"password"`
 }
 
-func(dto UserDto) GetEntity() (UserEntity, error){
+func(dto *UserDto) GetMappedEntity() (*UserEntity, error){
 	hashedPassword, err := helpers.HashPassoword(dto.Password)
 
 	if err != nil {
-		return UserEntity{}, err
+		return &UserEntity{}, err
 	}
 
-	return UserEntity{
+	return &UserEntity{
 		FirstName: dto.FirstName,
 		LastName: dto.LastName,
 		Email: dto.Email,

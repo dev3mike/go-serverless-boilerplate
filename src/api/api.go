@@ -29,13 +29,13 @@ func(api ApiHandler) CreateUser(userDto types.UserDto) error {
 		return inputErr
 	}
 
-	userEntity, err := userDto.GetEntity();
+	userEntity, err := userDto.GetMappedEntity();
 	
 	if err != nil{
 		return err
 	}
 
-	err = api.userService.CreateUser(&userEntity);
+	err = api.userService.CreateUser(userEntity);
 
 	if err != nil{
 		return err
