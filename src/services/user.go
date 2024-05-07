@@ -10,13 +10,13 @@ type UserService struct {
 	dbClient database.DataStore
 }
 
-func NewUserService(dbClient database.DataStore) UserService{
-	return UserService{
+func NewUserService(dbClient database.DataStore) *UserService{
+	return &UserService{
 		dbClient: dbClient,
 	}
 }
 
-func(u UserService) CreateUser(user *types.UserEntity) error{
+func(u *UserService) CreateUser(user *types.UserEntity) error{
 	userExists, err := u.dbClient.DoesUserExist(user.Email);
 
 	if err != nil{
@@ -34,4 +34,10 @@ func(u UserService) CreateUser(user *types.UserEntity) error{
 	}
 
 	return nil
+}
+
+func(u *UserService) GetUser(username string) (*types.UserEntity, error){
+	var user types.UserEntity
+
+	result, err := u.dbClient.
 }

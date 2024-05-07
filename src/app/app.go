@@ -19,6 +19,6 @@ func NewApp() App {
 	apiHandler := api.NewApiHandler(userService)
 
 	return App{
-		ApiHandler: apiHandler,
+		ApiHandler: *apiHandler,
 	}
 }

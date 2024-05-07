@@ -10,7 +10,7 @@ type Input struct{
 	Value string
 }
 
-func ValidateInput(inputs ...Input) error{
+func ValidateInput(inputs ...*Input) error{
 	for _, field := range inputs {
         if strings.TrimSpace(field.Value) == "" {
             return fmt.Errorf("%s could not be empty", field.Name)

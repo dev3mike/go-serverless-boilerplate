@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 
@@ -43,7 +44,42 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 
 	usersTable.GrantReadWriteData(userRegistrationHandlerFunction)
 
+	// API Gateway
+	api := awsapigateway.NewRestApi(stack, jsii.String("restApi"), &awsapigateway.RestApiProps{
+		DefaultCorsPreflightOptions: &awsapigateway.CorsOptions{
+			AllowHeaders: jsii.Strings("Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key"),
+			AllowMethods: jsii.Strings("GET", "POST", "PUT", "DELETE", "OPTIONS"),
+			AllowOrigins: jsii.Strings("*"),
+		},
+		DeployOptions: &awsapigateway.StageOptions{
+			LoggingLevel:     awsapigateway.MethodLoggingLevel_INFO,
+			DataTraceEnabled: jsii.Bool(true),
+		},
+		EndpointConfiguration: &awsapigateway.EndpointConfiguration{
+			Types: &[]awsapigateway.EndpointType{awsapigateway.EndpointType_REGIONAL},
+		},
+	})
+
+	registerRoute("register", "POST", &userRegistrationHandlerFunction, api)
+
+	// userRegistrationFuncIntegration := awsapigateway.NewLambdaIntegration(userRegistrationHandlerFunction, nil)
+
+	// '/register'
+	// registerUserResource := api.Root().AddResource(jsii.String("register"), nil)
+	// registerUserResource.AddMethod(jsii.String("POST"), userRegistrationFuncIntegration, nil)
+
+	// '/login'
+	// loginResource := api.Root().AddResource(jsii.String("login"), nil)
+	// loginResource.AddMethod(jsii.String("POST"), integration, nil)
+
 	return stack
+}
+
+func registerRoute(path, method string, handlerFunction *awslambda.Function, api awsapigateway.RestApi) {
+	userRegistrationFuncIntegration := awsapigateway.NewLambdaIntegration(*handlerFunction, nil)
+
+	registerUserResource := api.Root().AddResource(jsii.String(path), nil)
+	registerUserResource.AddMethod(jsii.String(method), userRegistrationFuncIntegration, nil)
 }
 
 func main() {

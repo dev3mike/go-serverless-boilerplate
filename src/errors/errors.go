@@ -6,12 +6,14 @@ const (
 	InternalServerError = "InternalServerError"
 	EmailAlreadyExist = "EmailAlreadyExist"
 	InvalidInput = "InvalidInput"
+	UserCouldNotBeFound = "UserCouldNotBeFound"
 )
 
 var errorsMap = map[string]string{
 	InternalServerError: "something went wrong, try again later",
 	EmailAlreadyExist: "email already exist in the database",
 	InvalidInput: "the input is invalid",
+	UserCouldNotBeFound: "UserCouldNotBeFound",
 }
 
 func NewError(errorKey string) error {

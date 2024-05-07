@@ -6,6 +6,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/dev3mike/go-serverless-boilerplate/src/errors"
 	"github.com/dev3mike/go-serverless-boilerplate/src/types"
 )
 
@@ -18,17 +20,17 @@ type DynamoDbClient struct {
 }
 
 
-func NewDynamoDbClient() DynamoDbClient {
+func NewDynamoDbClient() *DynamoDbClient {
 
 	dbSession := session.Must(session.NewSession())
 	dbClient := dynamodb.New(dbSession)
 
- return DynamoDbClient{
+ return &DynamoDbClient{
 	dbClient: dbClient,
  }
 }
 
-func(db DynamoDbClient) DoesUserExist(email string) (bool, error){
+func(db *DynamoDbClient) DoesUserExist(email string) (bool, error){
 
 	validatedEmail, err := mail.ParseAddress(email);
 
@@ -56,7 +58,7 @@ func(db DynamoDbClient) DoesUserExist(email string) (bool, error){
 	return false, nil;
 }
 
-func(db DynamoDbClient) CreateUser(userDto *types.UserEntity) error {
+func(db *DynamoDbClient) CreateUser(userDto *types.UserEntity) error {
 	item := &dynamodb.PutItemInput{
 		TableName: aws.String(TABLE_NAME),
 		Item: map[string]*dynamodb.AttributeValue{
@@ -82,4 +84,34 @@ func(db DynamoDbClient) CreateUser(userDto *types.UserEntity) error {
 	}
 
 	return nil
+}
+
+func(db *DynamoDbClient) GetUser(email string) (*types.UserEntity, error){
+	
+	var user types.UserEntity
+
+	result, err := db.dbClient.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(TABLE_NAME),
+		Key: map[string]*dynamodb.AttributeValue{
+			"email": {
+				S: aws.String(email),
+			},
+		},
+	})
+
+	if err != nil{
+		return &user, err
+	}
+
+	if result.Item == nil{
+		return &user, errors.NewError(errors.UserCouldNotBeFound)
+	}
+	
+	err = dynamodbattribute.UnmarshalMap(result.Item, &user)
+
+	if err != nil{
+		return &user, err
+	}
+
+	return &user, nil
 }

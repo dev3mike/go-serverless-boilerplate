@@ -7,22 +7,22 @@ import (
 )
 
 type ApiHandler struct {
-	userService services.UserService
+	userService *services.UserService
 }
 
-func NewApiHandler(userService services.UserService) ApiHandler {
-	return ApiHandler{
+func NewApiHandler(userService *services.UserService) *ApiHandler {
+	return &ApiHandler{
 		userService: userService,
 	}
 }
 
-func(api ApiHandler) CreateUser(userDto types.UserDto) error {
+func(api *ApiHandler) CreateUser(userDto *types.UserDto) error {
 
 	inputErr := helpers.ValidateInput(
-		helpers.Input{Name: "email", Value: userDto.Email},
-		helpers.Input{Name: "firstName", Value: userDto.FirstName},
-		helpers.Input{Name: "lastName", Value: userDto.LastName},
-		helpers.Input{Name: "password", Value: userDto.Password},
+		&helpers.Input{Name: "email", Value: userDto.Email},
+		&helpers.Input{Name: "firstName", Value: userDto.FirstName},
+		&helpers.Input{Name: "lastName", Value: userDto.LastName},
+		&helpers.Input{Name: "password", Value: userDto.Password},
 	)
 
 	if inputErr != nil {
