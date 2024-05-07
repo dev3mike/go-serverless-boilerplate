@@ -32,17 +32,17 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 			TableName: jsii.String("usersTable"),
 	})
 
-	userRegistrationHandlerFunction := awslambda.NewFunction(
+	apiRequestHandlerFunction := awslambda.NewFunction(
 		stack, 
-		jsii.String("userRegistrationHandlerFunction"), 
+		jsii.String("apiRequestHandlerFunction"), 
 		&awslambda.FunctionProps{
-			FunctionName: jsii.String("userRegistrationHandlerFunction"),
+			FunctionName: jsii.String("apiRequestHandlerFunction"),
 			Runtime:      awslambda.Runtime_PROVIDED_AL2023(),
 			Code:         awslambda.AssetCode_FromAsset(jsii.String("src/."), nil),
 			Handler:      jsii.String("main"),
 		})
 
-	usersTable.GrantReadWriteData(userRegistrationHandlerFunction)
+	usersTable.GrantReadWriteData(apiRequestHandlerFunction)
 
 	// API Gateway
 	api := awsapigateway.NewRestApi(stack, jsii.String("restApi"), &awsapigateway.RestApiProps{
@@ -60,26 +60,13 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 		},
 	})
 
-	registerRoute("register", "POST", &userRegistrationHandlerFunction, api)
+	routeFunctionIntegration := awsapigateway.NewLambdaIntegration(apiRequestHandlerFunction, nil)
 
-	// userRegistrationFuncIntegration := awsapigateway.NewLambdaIntegration(userRegistrationHandlerFunction, nil)
-
-	// '/register'
-	// registerUserResource := api.Root().AddResource(jsii.String("register"), nil)
-	// registerUserResource.AddMethod(jsii.String("POST"), userRegistrationFuncIntegration, nil)
-
-	// '/login'
-	// loginResource := api.Root().AddResource(jsii.String("login"), nil)
-	// loginResource.AddMethod(jsii.String("POST"), integration, nil)
+	// Routes
+	resource := api.Root().AddResource(jsii.String("register"), nil)
+	resource.AddMethod(jsii.String("POST"), routeFunctionIntegration, nil)
 
 	return stack
-}
-
-func registerRoute(path, method string, handlerFunction *awslambda.Function, api awsapigateway.RestApi) {
-	routeFunctionIntegration := awsapigateway.NewLambdaIntegration(*handlerFunction, nil)
-
-	resource := api.Root().AddResource(jsii.String(path), nil)
-	resource.AddMethod(jsii.String(method), routeFunctionIntegration, nil)
 }
 
 func main() {
