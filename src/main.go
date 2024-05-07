@@ -10,22 +10,28 @@ import (
 	"github.com/dev3mike/go-serverless-boilerplate/src/mapper"
 )
 
-func main(){
-	application := app.NewApp()
-	lambda.Start(func(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
-		switch request.Path{
-		case "/register":
-			dto, err := mapper.GetMappedUserDto(request);
+type AppHandler struct {
+	Application *app.App
+}
 
-			if err != nil{
-				return errors.NewApiErrorResponse("The input is invalid", 400), err
-			}
-
-			return application.ApiHandler.CreateUser(dto)
-		default:
-			return events.APIGatewayProxyResponse{
-				StatusCode: http.StatusNotFound,
-			}, nil
+func (h *AppHandler) HandleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	switch request.Path {
+	case "/register":
+		dto, err := mapper.GetMappedUserDto(request)
+		if err != nil {
+			return errors.NewApiErrorResponse("The input is invalid", 400), err
 		}
-	})
-} 
+		return h.Application.ApiHandler.CreateUser(dto)
+	default:
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusNotFound,
+		}, nil
+	}
+}
+
+func main() {
+	application := app.NewApp()
+	handler := &AppHandler{Application: &application}
+	
+	lambda.Start(handler.HandleRequest)
+}
