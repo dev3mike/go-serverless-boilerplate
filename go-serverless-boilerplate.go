@@ -76,10 +76,10 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 }
 
 func registerRoute(path, method string, handlerFunction *awslambda.Function, api awsapigateway.RestApi) {
-	userRegistrationFuncIntegration := awsapigateway.NewLambdaIntegration(*handlerFunction, nil)
+	routeFunctionIntegration := awsapigateway.NewLambdaIntegration(*handlerFunction, nil)
 
-	registerUserResource := api.Root().AddResource(jsii.String(path), nil)
-	registerUserResource.AddMethod(jsii.String(method), userRegistrationFuncIntegration, nil)
+	resource := api.Root().AddResource(jsii.String(path), nil)
+	resource.AddMethod(jsii.String(method), routeFunctionIntegration, nil)
 }
 
 func main() {
