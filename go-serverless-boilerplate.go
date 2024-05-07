@@ -65,6 +65,7 @@ func NewGoServerlessBoilerplateStack(scope constructs.Construct, id string, prop
 	// Routes
 	resource := api.Root().AddResource(jsii.String("register"), nil)
 	resource.AddMethod(jsii.String("POST"), routeFunctionIntegration, nil)
+	
 
 	return stack
 }
