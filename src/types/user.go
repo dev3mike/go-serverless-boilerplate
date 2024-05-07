@@ -10,6 +10,11 @@ type UserDto struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
+type UserDtoResponse struct {
+	FirstName string `json:"firstName"`
+	LastName string `json:"lastName"`
+	Email string `json:"email"`
+}
 
 type UserEntity struct {
 	FirstName string `json:"firstName"`
@@ -30,5 +35,13 @@ func(dto *UserDto) GetMappedEntity() (*UserEntity, error){
 		LastName: dto.LastName,
 		Email: dto.Email,
 		Password: hashedPassword,
+	}, nil
+}
+
+func(dto *UserEntity) GetMappedResponseDto() (*UserDtoResponse, error){
+	return &UserDtoResponse{
+		FirstName: dto.FirstName,
+		LastName: dto.LastName,
+		Email: dto.Email,
 	}, nil
 }

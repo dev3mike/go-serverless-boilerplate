@@ -23,7 +23,7 @@ func(u *UserService) CreateUser(user *types.UserEntity) error{
 		return errors.NewErrorWithError(errors.InternalServerError, err)
 	}
 
-	if userExists != false{
+	if !userExists {
 		return errors.NewError(errors.EmailAlreadyExist)
 	}
 
@@ -36,8 +36,12 @@ func(u *UserService) CreateUser(user *types.UserEntity) error{
 	return nil
 }
 
-func(u *UserService) GetUser(username string) (*types.UserEntity, error){
-	var user types.UserEntity
+func(u *UserService) GetUser(email string) (*types.UserEntity, error){
+	user, err := u.dbClient.GetUser(email);
 
-	result, err := u.dbClient.
+	if err != nil{
+		return nil, err
+	}
+
+	return user, nil
 }

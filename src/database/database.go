@@ -7,7 +7,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/dev3mike/go-serverless-boilerplate/src/errors"
 	"github.com/dev3mike/go-serverless-boilerplate/src/types"
 )
 
@@ -104,7 +103,7 @@ func(db *DynamoDbClient) GetUser(email string) (*types.UserEntity, error){
 	}
 
 	if result.Item == nil{
-		return &user, errors.NewError(errors.UserCouldNotBeFound)
+		return nil, nil
 	}
 	
 	err = dynamodbattribute.UnmarshalMap(result.Item, &user)

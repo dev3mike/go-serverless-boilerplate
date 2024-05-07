@@ -1,6 +1,10 @@
 package api
 
 import (
+	"net/http"
+
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/dev3mike/go-serverless-boilerplate/src/errors"
 	"github.com/dev3mike/go-serverless-boilerplate/src/helpers"
 	"github.com/dev3mike/go-serverless-boilerplate/src/services"
 	"github.com/dev3mike/go-serverless-boilerplate/src/types"
@@ -16,7 +20,7 @@ func NewApiHandler(userService *services.UserService) *ApiHandler {
 	}
 }
 
-func(api *ApiHandler) CreateUser(userDto *types.UserDto) error {
+func(api *ApiHandler) CreateUser(userDto *types.UserDto) (events.APIGatewayProxyResponse, error) {
 
 	inputErr := helpers.ValidateInput(
 		&helpers.Input{Name: "email", Value: userDto.Email},
@@ -26,20 +30,40 @@ func(api *ApiHandler) CreateUser(userDto *types.UserDto) error {
 	)
 
 	if inputErr != nil {
-		return inputErr
+		return errors.NewApiErrorResponse(inputErr.Error(), http.StatusBadRequest), nil
 	}
 
 	userEntity, err := userDto.GetMappedEntity();
 	
 	if err != nil{
-		return err
+		return errors.NewApiErrorResponse("Invalid input", http.StatusBadRequest), err
 	}
 
 	err = api.userService.CreateUser(userEntity);
 
 	if err != nil{
-		return err
+		return errors.NewInternalServerError(), err
 	}
 
-	return nil
+	return helpers.NewApiMessageResponse("User successfully created"), nil
+}
+
+func(api *ApiHandler) GetUser(email string) (events.APIGatewayProxyResponse, error) {
+	user, err := api.userService.GetUser(email)
+
+	if err != nil {
+		return errors.NewInternalServerError(), err
+	}
+
+	if user == nil {
+		return errors.NewApiErrorResponse("User could not be found", http.StatusNotFound), nil
+	}
+
+	dto, err := user.GetMappedResponseDto();
+
+	if err != nil {
+		return errors.NewInternalServerError(), err
+	}
+
+	return helpers.NewApiResponse(dto), nil
 }
